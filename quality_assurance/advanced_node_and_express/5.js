@@ -23,10 +23,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.route('/').get((req, res) => {
-  res.render(process.cwd() + '/views/pug/index', {"title": "hello", "message": "please login"});
-});
-
 myDB(async client => {
   const myDataBase = await client.db("database").collection("users");
 

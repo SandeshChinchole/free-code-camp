@@ -6,6 +6,8 @@ const fccTesting = require('./freeCodeCamp/fcctesting.js');
 const passport = require("passport");
 const session = require("express-session");
 const ObjectID = require("mongodb").ObjectId;
+const localStrategy = require("passport-local");
+
 
 const app = express();
 app.set("view engine", "pug");
@@ -23,9 +25,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.route('/').get((req, res) => {
-  res.render(process.cwd() + '/views/pug/index', {"title": "hello", "message": "please login"});
-});
 
 myDB(async client => {
   const myDataBase = await client.db("database").collection("users");
@@ -46,6 +45,22 @@ myDB(async client => {
       done(null, doc);
     });
   });
+
+passport.use(new localStrategy((username, password, done) => {
+  myDataBase.findOne({"username": "username"}, (err, user) => {
+    console.log("User " + username + " tried to log in");
+    if(err) {
+      return done(err);
+    };
+    if(!user){
+      return done(null, false);
+    };
+    if(password !== user.password){
+      return done(null, false);
+    };
+    done(null, user);
+  })
+}));
 
 }).catch(e => {
 
