@@ -82,7 +82,6 @@ myDB(async (client) => {
     res.status(404).type("text").send("Not Found");
   });
 
-  // Serialization and deserialization here...
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });
